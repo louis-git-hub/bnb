@@ -77,10 +77,9 @@ with sync_playwright() as p:
                 price_text = extract_number_from_string(price_element.inner_text())
             else:
                 cursor.execute('INSERT INTO prices (date_relevage, date_prix, prix) VALUES (?, ?, ?)',
-                    (datetime.now().strftime("%d/%m/%Y"), target_date_str, "Bloqué"))
-        else:
-            cursor.execute('INSERT INTO prices (date_relevage, date_prix, prix) VALUES (?, ?, ?)',
                 (datetime.now().strftime("%d/%m/%Y"), target_date_str, "Bloqué"))
+        else:
+            continue:
 
         if b_nombre > 0:
             price_sql = price_text / b_nombre
