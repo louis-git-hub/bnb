@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime, timedelta
 from playwright.sync_api import sync_playwright
 
-NUMBER_OF_DAYS = 30
+DAYS = 30
 BASE = "https://www.airbnb.fr/rooms/"
 ID = "849164886478265494"
 URL = BASE + ID
@@ -39,7 +39,7 @@ with sync_playwright() as p:
     if page.is_visible(close_button_selector):
         page.click(close_button_selector)
 
-    for i in range(NUMBER_OF_DAYS):
+    for i in range(DAYS):
         page.click(fermer)
         target_date = datetime.now() + timedelta(days=i)
         target_date_str = target_date.strftime("%d/%m/%Y")
@@ -76,9 +76,11 @@ with sync_playwright() as p:
             if price_element:
                 price_text = extract_number_from_string(price_element.inner_text())
             else:
-                continue
+                cursor.execute('INSERT INTO prices (date_relevage, date_prix, prix) VALUES (?, ?, ?)',
+                    (datetime.now().strftime("%d/%m/%Y"), target_date_str, "Bloqué"))
         else:
-            continue
+            cursor.execute('INSERT INTO prices (date_relevage, date_prix, prix) VALUES (?, ?, ?)',
+                (datetime.now().strftime("%d/%m/%Y"), target_date_str, "Bloqué"))
 
         if b_nombre > 0:
             price_sql = price_text / b_nombre
