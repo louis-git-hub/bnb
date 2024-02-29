@@ -1,13 +1,13 @@
-import re
+import csv
 from datetime import datetime, timedelta
 from playwright.sync_api import sync_playwright
 import argparse
-import csv  # Importez le module csv
+import re  # Assurez-vous d'importer le module re pour extract_number_from_string
 
-# Configuration initiale
+# Initialisation des arguments du script
 parser = argparse.ArgumentParser(description='Traite les variables DAYS et ID.')
 parser.add_argument('--days', type=int, default=30, help='Nombre de jours')
-parser.add_argument('--id', type=str, help='Identifiant unique')
+parser.add_argument('--id', type=str, required=True, help='Identifiant unique')  # ID est requis
 args = parser.parse_args()
 
 DAYS = args.days
@@ -25,17 +25,18 @@ def extract_number_from_string(text):
     numbers = re.findall(r'\d+', text)
     return int(numbers[0]) if numbers else 0
 
+
+
 # Préparation du nom du fichier CSV
 today_str = datetime.now().strftime("%Y-%m-%d")
-filename_csv = f"{ID}-{DAYS}-{today_str}.csv"
+filename_csv = f"{ID}_{DAYS}_{today_str}.csv"
 
-# Création et ouverture du fichier CSV
-with open(filename_csv, mode='w', newline='') as file:
+# Ouverture du fichier CSV pour écriture
+with open(filename_csv, mode='w', newline='', encoding='utf-8') as file:
     writer = csv.writer(file)
     # En-têtes du CSV
-    writer.writerow(['Date du Prix', 'Prix', 'Durée Minimale'])
-    
-    # Logique de Playwright pour parcourir le site et collecter les données
+    writer.writerow(['Prix', 'Date du Prix', 'Durée Minimale'])
+
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False, slow_mo=2000)
         page = browser.new_page()
@@ -46,35 +47,38 @@ with open(filename_csv, mode='w', newline='') as file:
             page.click(fermer)
             target_date = datetime.now() + timedelta(days=i)
             target_date_str = target_date.strftime("%d/%m/%Y")
-            if not page.is_visible(f'[data-testid="calendar-day-{target_date_str}"]') or \
-               not page.is_enabled(f'[data-testid="calendar-day-{target_date_str}"]'):
-                writer.writerow([target_date_str, "Bloqué", 0])
-                continue  # Continue avec le prochain jour si la date est bloquée
-            
-            page.click(f'[data-testid="calendar-day-{target_date_str}"]')
-            page.wait_for_timeout(2000)  # Attente pour que le calendrier se mette à jour
-
+            if page.is_visible(f'[data-testid="calendar-day-{target_date_str}"]') and \
+               page.is_enabled(f'[data-testid="calendar-day-{target_date_str}"]'):
+                page.click(f'[data-testid="calendar-day-{target_date_str}"]')
+                page.wait_for_timeout(2000)
+            else:
+                writer.writerow(["Bloqué", target_date_str, 0])
+                continue
             nombre = page.inner_text(testid_selector)
             b_nombre = extract_number_from_string(nombre) if nombre else 0
-
-            tomorrow_date = target_date + timedelta(days=b_nombre or 1)
+            a_nombre = b_nombre if b_nombre > 0 else 1
+            tomorrow_date = target_date + timedelta(days=a_nombre)
             tomorrow_date_str = tomorrow_date.strftime("%d/%m/%Y")
-            if not page.is_visible(f'[data-testid="calendar-day-{tomorrow_date_str}"]') or \
-               not page.is_enabled(f'[data-testid="calendar-day-{tomorrow_date_str}"]'):
-                writer.writerow([target_date_str, "Bloqué", b_nombre])
+            if page.is_visible(f'[data-testid="calendar-day-{tomorrow_date_str}"]') and \
+               page.is_enabled(f'[data-testid="calendar-day-{tomorrow_date_str}"]'):
+                page.click(f'[data-testid="calendar-day-{tomorrow_date_str}"]')
+            else:
+                writer.writerow(["Bloqué", target_date_str, 0])
                 continue
-
-            page.click(f'[data-testid="calendar-day-{tomorrow_date_str}"]')
-            page.wait_for_timeout(2000)  # Attente pour que la sélection de date se complète
-
-            price = "Bloqué"  # Valeur par défaut si le prix n'est pas trouvé
             section_element = page.query_selector(ppp)
             if section_element:
                 price_element = section_element.query_selector(tot)
                 if price_element:
-                    price_text = price_element.inner_text()
-                    price = extract_number_from_string(price_text)
-            
-            writer.writerow([target_date_str, price, b_nombre])
-        
+                    price_text = extract_number_from_string(price_element.inner_text())
+                    if b_nombre > 0:
+                        price_sql = price_text / b_nombre
+                    else:
+                        price_sql = price_text
+                    writer.writerow([price_sql, target_date_str, b_nombre])
+                else:
+                    writer.writerow(["Bloqué", target_date_str, 0])
+                    continue
+            else:
+                writer.writerow(["Bloqué", target_date_str, 0])
+                continue
         browser.close()
