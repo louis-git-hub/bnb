@@ -2,10 +2,16 @@ import re
 import sqlite3
 from datetime import datetime, timedelta
 from playwright.sync_api import sync_playwright
+import argparse
 
-DAYS = 30
+parser = argparse.ArgumentParser(description='Traite les variables DAYS et ID.')
+parser.add_argument('--days', type=int, default=30, help='Nombre de jours')
+parser.add_argument('--id', type=str, help='Identifiant unique')
+args = parser.parse_args()
+
+DAYS = args.days
+ID = args.id
 BASE = "https://www.airbnb.fr/rooms/"
-ID = "849164886478265494"
 URL = BASE + ID
 close_button_selector = '[aria-label="Fermer"]'
 testid_selector = 'div[data-testid="availability-calendar-date-range"]'
