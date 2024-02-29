@@ -1,5 +1,5 @@
 import re
-import sqlite3
+import csv
 from datetime import datetime, timedelta
 from playwright.sync_api import sync_playwright
 import argparse
@@ -9,6 +9,8 @@ parser.add_argument('--days', type=int, default=30, help='Nombre de jours')
 parser.add_argument('--id', type=str, help='Identifiant unique')
 args = parser.parse_args()
 
+filename = f"{ID}-{DAYS}-{today}.csv"
+today = datetime.now().strftime("%Y-%m-%d")
 DAYS = args.days
 ID = args.id
 BASE = "https://www.airbnb.fr/rooms/"
@@ -18,7 +20,7 @@ testid_selector = 'div[data-testid="availability-calendar-date-range"]'
 fermer = 'button:has-text("Effacer les dates")'
 ppp = 'div[data-section-id="BOOK_IT_SIDEBAR"] section'
 tot = 'div:has-text("Total")'
-price_sql = 0
+price_csv = 0
 
 def extract_number_from_string(text):
     numbers = re.findall(r'\d+', text)
@@ -88,9 +90,9 @@ with sync_playwright() as p:
             continue:
 
         if b_nombre > 0:
-            price_sql = price_text / b_nombre
+            price_csv = price_text / b_nombre
             cursor.execute('INSERT INTO prices (date_relevage, date_prix, prix) VALUES (?, ?, ?)',
-                                (datetime.now().strftime("%d/%m/%Y"), target_date_str, price_sql))
+                                (datetime.now().strftime("%d/%m/%Y"), target_date_str, price_csv))
             conn.commit()
         else:
             cursor.execute('INSERT INTO prices (date_relevage, date_prix, prix) VALUES (?, ?, ?)',
