@@ -25,8 +25,6 @@ def extract_number_from_string(text):
     numbers = re.findall(r'\d+', text)
     return int(numbers[0]) if numbers else 0
 
-
-
 # Préparation du nom du fichier CSV
 today_str = datetime.now().strftime("%Y-%m-%d")
 filename_csv = f"{ID}_{DAYS}_{today_str}.csv"
