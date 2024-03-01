@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Password Recovery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand me-auto ms-4 navbar-md-ms-0" href="./one.html">Sonar</a>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Sonar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a class="nav-link active mx-lg-2" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link mx-lg-2" href="#">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link mx-lg-2" href="#">Charts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link mx-lg-2" href="#">Desk</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <a href="./login.html" class="login-button me-4" >Login</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+<div id="alertPlaceholder" class="position-fixed" style="top: 60px; right: 20px; z-index: 1050;"></div>
+
+<main>
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card p-5 my-4 text-dark" style="max-width: 500px;">
+            <h2 class="fw-bold mb-4 text-center">Password Recovery</h2>
+            <form novalidate>
+                <div class="form-floating mb-3">
+                    <input type="email" id="recoveryEmail" class="form-control" placeholder="name@example.com" 
+                           pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required title="Please enter a valid email address.">
+                    <label for="recoveryEmail">Email address</label>
+                    <div class="invalid-feedback">Please provide a valid email address.</div>
+                    <div class="valid-feedback">Correct email</div>
+                </div>
+                <button class="btn btn-primary w-100" type="submit" id="recoveryButton">
+                    Send Recovery Email
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    const emailInput = document.getElementById('recoveryEmail');
+    const alertPlaceholder = document.getElementById('alertPlaceholder');
+    let recoveryEmailSent = false; // Indicateur pour suivre si l'email de récupération a été envoyé
+
+    function showAlert(message, type) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = [
+            `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+            `   <div>${message}</div>`,
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+            '</div>'
+        ].join('');
+        alertPlaceholder.append(wrapper);
+    }
+
+    function closeAlert(alert) {
+        alert.addEventListener('closed.bs.alert', function () {
+            alert.remove();
+        });
+        alert.classList.remove('show');
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Empêcher la soumission classique du formulaire
+        
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
+        if (recoveryEmailSent) {
+            // Afficher un message différent si une demande de récupération a déjà été faite
+            showAlert('Your password recovery has already been sent.', 'warning');
+        } else {
+            // Traitement et envoi du formulaire ici, par exemple, avec un appel API
+            recoveryEmailSent = true; // Marquer que l'email de récupération a été envoyé
+            const alert = showAlert('A recovery email has been sent to your email address.', 'success');
+            setTimeout(() => closeAlert(alert), 6000); // Disparition automatique après 6 secondes
+        }
+    });
+
+    // Fermer les alertes lorsqu'on clique sur le bouton de fermeture
+    alertPlaceholder.addEventListener('click', function (e) {
+        if (e.target.classList.contains('btn-close')) {
+            const alert = e.target.parentElement;
+            closeAlert(alert);
+        }
+    });
+});
+
+</script>
+</body>
+</html>

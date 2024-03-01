@@ -1,0 +1,104 @@
+
+
+
+.navbar{
+    background-color: rgb(237, 237, 237);
+    height: 50px;
+}
+
+.login-button {
+    background-color: blue;
+    color: white;
+    font-size: 14px;
+    padding: 6px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: 0.3s background-color;
+}
+
+.login-button:hover{
+    background-color: rgb(45, 45, 166);
+}
+
+.navbar-toggler{
+    border: none;
+    font-size: 1.25rem;
+}
+
+.navbar-toggler:focus, .btn-close:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.nav-link {
+    color: #666777;
+    font-weight: 500;
+    position: relative;
+    padding: 8px;
+    font-size: 13px;
+}
+
+.nav-link:hover, .nav-link:active{
+    color: #000;
+}
+
+
+.btn{
+    background-color: blue;
+    color: white;
+    font-size: 14px;
+    padding: 6px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+}
+
+.card{
+    background-color: rgb(237, 237, 237);
+}
+
+
+.form-control {
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #86b7fe; /* Couleur de votre choix */
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* Ajustez selon le style de votre site */
+}
+
+.btn-primary {
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #0a58ca; /* Couleur plus foncée pour l'effet hover */
+    border-color: #0a53be;
+}
+
+.form-control {
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #86b7fe; /* Couleur de votre choix */
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* Ajustez selon le style de votre site */
+}
+
+.btn-primary {
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #0a58ca; /* Couleur plus foncée pour l'effet hover */
+    border-color: #0a53be;
+}
+
+
+
+
+
+.card {
+    transition: all .3s ease-in-out; /* Assurez une transition douce */
+    overflow: hidden; /* Empêche le contenu extérieur de déborder */
+}
+
