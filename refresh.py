@@ -32,7 +32,7 @@ while True:
 
     for id_bnb, days, id in rows:
         # Construisez la commande comme avant
-        command = ["python", "airbnb.py", "--id", str(id_bnb), "--days", str(days)]
+        command = ["python", "airbnb.py", "--id", str(id_bnb), "--id", str(id), "--days", str(days)]
         webhook_url = 'http://sonarbnb.com/scrap/{}'.format(id)
         print(webhook_url)
 
