@@ -1,7 +1,7 @@
 <?php   
-$dbPath = 'C:\xampp\htdocs\php\base.db';
+$dbPath = 'C:\xampp\htdocs\My_project\Bootstrapp\azerty.db';
 
-try {
+ try {
     $conn = new PDO('sqlite:' . $dbPath);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -14,25 +14,28 @@ try {
     $conn->exec($sql);
 
     // Prepare INSERT statement
-    $sql = "INSERT INTO infos (mail, link1, link2) VALUES (:mail, :nom, :prenom)";
+    $sql = "INSERT INTO infos (mail, link1, link2) VALUES (:mail, :link1, :link2)";
     $stmt = $conn->prepare($sql);
+   // Insert data
+   $mail = $_POST['mail'];
+   $link1 = $_POST['link1'];
+   $link2 = $_POST['link2'];   
 
     // Bind parameters to statement variables
     $stmt->bindParam(':mail', $mail);
-    $stmt->bindParam(':nom', $link1);
-    $stmt->bindParam(':prenom', $link2);
-
-    // Insert data
-    $mail = $mail = $_POST['mail'];
-    $nom = $_POST['link1'];
-    $name = $_POST['link2'];   
+    $stmt->bindParam(':link1', $link1);
+    $stmt->bindParam(':link2', $link2);
 
     $stmt->execute();
 
-    echo "New record created successfully";
-} catch(PDOException $e) {
+} 
+    catch(PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
 
 $conn = null;
+
+echo json_encode(["message" => "Le formulaire a été soumis avec succès."]);
+
+
 ?>
