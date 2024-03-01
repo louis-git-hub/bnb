@@ -33,10 +33,10 @@ filename_csv = f"{ID}_{DAYS}_{today_str}.csv"
 with open(filename_csv, mode='w', newline='', encoding='utf-8') as file:
     writer = csv.writer(file)
     # En-têtes du CSV
-    writer.writerow(['Prix', 'Date du Prix', 'Durée Minimale'])
+    writer.writerow(['Prix', 'Date_prix', 'Durée Minimale'])
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False, slow_mo=2000)
+        browser = p.chromium.launch(headless=False)
         page = browser.new_page()
         page.goto(URL, wait_until='networkidle')
         if page.is_visible(close_button_selector):
@@ -79,4 +79,4 @@ with open(filename_csv, mode='w', newline='', encoding='utf-8') as file:
             else:
                 writer.writerow(["Bloqué", target_date_str, 0])
                 continue
-        browser.close()
+    browser.close()
