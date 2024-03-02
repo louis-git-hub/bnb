@@ -13,8 +13,9 @@ function url_to_id(): string {
 }
 
 $result = url_to_id();
+$days = 7 //c une valeur par défaut
 
-$url = "http://127.0.0.1:5000/api/" . $result . "/7";
+$url = "http://127.0.0.1:5000/api/" . $result . $days;
 
 echo $url; // Ajoutez un point-virgule ici
 
