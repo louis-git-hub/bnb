@@ -102,3 +102,18 @@
     overflow: hidden; /* Empêche le contenu extérieur de déborder */
 }
 
+
+
+@media (max-width: 767.98px) {
+    .card {
+        margin: 10px; /* Adds a little margin around the card */
+        max-width: 100%; /* Makes the card width responsive */
+    }
+}
+
+@media (max-width: 575.98px) {
+    .card {
+        margin: 15px;
+        max-width: 90%; /* You can adjust this as needed */
+    }
+}
