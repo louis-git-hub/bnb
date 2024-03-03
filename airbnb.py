@@ -38,7 +38,7 @@ with open(filename_csv, mode='w', newline='', encoding='utf-8') as file:
     writer.writerow(['Prix', 'Date_prix', 'Durée Minimale'])
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=False, slow_mo=2000)
         page = browser.new_page()
         try:
             page.goto(URL, wait_until='networkidle')
