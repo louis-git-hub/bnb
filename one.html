@@ -14,8 +14,9 @@
 <body>
 <header>
     <nav class="navbar navbar-expand-md fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand me-auto ms-4 navbar-md-ms-0" href="./one.html">Sonar</a>
+        <div class="container-fluid mx-2">
+            <img src="./logo2.png" class="ms-1" width="35" height="35" alt="">
+            <a class="navbar-brand me-auto ms-3 navbar-md-ms-0" href="./one.html">Sonar</a>
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
                 aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
@@ -28,18 +29,18 @@
                             <a class="nav-link active mx-lg-2" aria-current="page" href="#">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link mx-lg-2" href="#">About</a>
+                            <a class="nav-link mx-lg-2" href="./about.html">About</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link mx-lg-2" href="#">Charts</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link mx-lg-2" href="#">Desk</a>
+                            <a class="nav-link mx-lg-2" href="./desk.html">Desk</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <a href="./login.html" class="login-button me-4" >Login</a>
+            <a href="./login.html" class="login-button me-1" >Login</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -54,7 +55,7 @@
 <main>
     
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-        <div class="card p-5  my-4 text-dark" style="max-width: 400px;">
+        <div class="card p-4  my-4 text-dark" style="max-width: 600px;">
             <h3 class="fw-bold">Start Here2</h3>
             <p>To start you have to input the link from your listed airbnbs and your Email.</p>
     
@@ -102,112 +103,7 @@
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous">
     </script>
-
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Select form fields and the form itself
-            const form = document.querySelector('form');
-            const link1 = document.getElementById('link1');
-            const link2 = document.getElementById('link2');
-            const emailInput = document.getElementById('emailInput'); // Make sure IDs match your HTML
-            const submitButton = document.getElementById('submitButton');
-        
-            // Validation function for URLs
-            function validateURL(input) {
-                const urlPattern = new RegExp('^https://www\\..+\\..+$'); // Your URL validation regex
-                return urlPattern.test(input.value);
-            }
-        
-            // Validation function for Email
-            function validateEmail(input) {
-                const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Your email validation regex
-                return emailPattern.test(input.value);
-            }
-        
-            // Real-time validation listeners
-            [link1, link2].forEach(link => {
-                link.addEventListener('input', function() {
-                    if (validateURL(this)) {
-                        this.setCustomValidity('');
-                        this.classList.add('is-valid');
-                        this.classList.remove('is-invalid');
-                    } else {
-                        this.setCustomValidity('Invalid');
-                        this.classList.add('is-invalid');
-                        this.classList.remove('is-valid');
-                    }
-                });
-            });
-        
-            emailInput.addEventListener('input', function() {
-                if (validateEmail(this)) {
-                    this.setCustomValidity('');
-                    this.classList.add('is-valid');
-                    this.classList.remove('is-invalid');
-                } else {
-                    this.setCustomValidity('Invalid');
-                    this.classList.add('is-invalid');
-                    this.classList.remove('is-valid');
-                }
-            });
-        
-            // Form submission event listener
-            form.addEventListener('submit', function(e) {
-                // Check if the form is valid
-                if (!form.checkValidity()) {
-                    e.preventDefault(); // Prevent form submission
-                    form.classList.add('was-validated'); // Bootstrap validation styling
-                }
-                // If form is valid, it will continue to submit normally
-            });
-        });
-    </script>
-
     
-        
-    
-
-
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('monFormulaire');
-        
-            form.addEventListener('submit', function(e) {
-                e.preventDefault(); // Empêcher la soumission standard du formulaire
-        
-                // Récupérer les données du formulaire
-                const formData = new FormData(this);
-        
-                // Envoyer les données du formulaire de manière asynchrone
-                fetch('submit.php', { // Remplacez 'submit.php' par votre propre URL de traitement
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Afficher une alerte ou un message sur la page
-                    alert("Formulaire soumis avec succès !"); // Ici, vous pouvez remplacer par votre propre logique d'alerte
-                    // Par exemple, pour afficher un message sans utiliser alert() :
-                    // document.getElementById('result').textContent = "Formulaire soumis avec succès !";
-                })
-                .catch(error => {
-                    console.error('Erreur :', error);
-                    alert("Erreur lors de la soumission du formulaire."); // Ou affichez l'erreur différemment
-                });
-            });
-        });
-    </script>
-    
-    
-    
-
-
-
-
 </body>
 
 </html>
