@@ -39,6 +39,23 @@ function fetch_url_content($url): string {
     return "true";
 }
 
+//decoupe l'URL en petit token
+function url_tokenizer($tokens)
+{
+    // Récupérer l'URL actuelle
+    $current_url = $_SERVER['REQUEST_URI'];
+
+    // Supprimer les éventuels paramètres GET de l'URL
+    $current_url = strtok($current_url, '?');
+
+    // Découper l'URL en tokens en utilisant le délimiteur "/"
+    $tokens = explode('/', $current_url);
+
+    // Supprimer le premier élément du tableau, car il sera vide en raison du slash initial dans l'URL
+    array_shift($tokens);
+    return $tokens ;
+}
+
 // Exemple d'utilisation de la fonction
 echo fetch_url_content($url); // Utilisez $url au lieu de $result
 
