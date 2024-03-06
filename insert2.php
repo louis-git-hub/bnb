@@ -1,74 +1,46 @@
 <?php
+$directoryPath = 'C:\xampp\htdocs\insert';
 
-// Extraction des tokens de l'URL actuelle via la fonction personnalisée
+// Appel de la fonction pour obtenir les tokens de l'URL
 $url_tokens = url_tokenizer();
-// echo $url_tokens;  // Affichage des tokens pour le débogage
 
-$directoryPath = 'C:\xampp\htdocs\insert\localfile22';
+// Créer le motif de recherche, en ajoutant le préfixe attendu au début du nom du fichier
+$pattern = $directoryPath . "\\" . $url_tokens. '*.csv';
+echo $pattern;
+echo $url_tokens;
 
-// Construction de l'URL cible pour télécharger le fichier CSV, basée sur les tokens et un modèle prédéfini
-$url = $directoryPath . "\\" . $url_tokens. '*.csv';
-echo $url;  // Affichage de l'URL pour le débogage
+// Utiliser glob pour obtenir tous les fichiers CSV qui correspondent au motif
+$csvFiles = glob($pattern);
 
-// Définition du chemin local où le fichier CSV sera sauvegardé
-$localPath = 'C:\xampp\htdocs\insert\localfile';
+// Vérifier si des fichiers correspondants ont été trouvés
+if (!empty($csvFiles)) {
+    // Prendre le premier fichier du tableau
+    $csvFilePath = $csvFiles[0];
+    // Extraire juste le nom du fichier à partir du chemin complet
+    $fileName = basename($csvFilePath);
+    // Extraire les parties à partir du nom du fichier
+    $parts = explode('_', $fileName);
 
-// Téléchargement du fichier CSV depuis l'URL spécifiée
-$fileContent = file_get_contents($url);
-
-if ($fileContent !== false) {
-    // Si le téléchargement réussit, sauvegarde du contenu dans un fichier local
-    file_put_contents($localPath, $fileContent);
-    echo "Le fichier a été téléchargé et sauvegardé en tant que $localPath";
+    // Assignation correcte des parties extraites
+    $part1 = isset($parts[0]) ? $parts[0] : '';
+    $part2 = isset($parts[1]) ? $parts[1] : '';
+    $part3 = isset($parts[2]) ? explode('.', $parts[2])[0] : ''; // '2024-03-05', en retirant l'extension .csv
 } else {
-    // Si le téléchargement échoue, affichage d'un message d'erreur
-    echo "Impossible de télécharger le fichier";
+    echo "Aucun fichier CSV correspondant trouvé.";
+    return; // Arrêter l'exécution si aucun fichier n'est trouvé
 }
 
-// Chemin vers le répertoire contenant les fichiers CSV
-$directoryPath = 'C:\xampp\htdocs\insert\localfile22';
-
-$localCsvFile = $localPath . '\\' . 'filename'; // Nom de fichier local pour sauvegarder le contenu
-
-// Initialisation de la session cURL
-$ch = curl_init();
-
-// Configuration des options de cURL
-curl_setopt($ch, CURLOPT_URL, $url); // URL du fichier à télécharger
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // Retourner le transfert en tant que chaîne
-curl_setopt($ch, CURLOPT_FILE, fopen($localCsvFile, 'w')); // Ouvrir le fichier et écrire la sortie
-
-// Exécution de la session cURL pour le téléchargement
-$result = curl_exec($ch);
-
-// Fermeture de la session cURL
-curl_close($ch);
-
-// Vérification du succès du téléchargement
-if ($result) {
-    echo "Le fichier a été téléchargé et sauvegardé en tant que $localCsvFile";
-} else {
-    // Si le téléchargement échoue, affichage d'un message d'erreur
-    echo "Impossible de télécharger le fichier";
-}
-
-// Chemin vers la base de données SQLite
 $sqliteDbPath = 'C:\xampp\htdocs\insert\donnees.db';
 
-// Récupération des tokens de l'URL une deuxième fois (peut-être redondant)
 $url_tokens = url_tokenizer();
 
-// Affichage des tokens pour le débogage
-echo '<pre>';
-print_r($url_tokens);
-echo '</pre>';
 
 try {
-    // Connexion à la base de données SQLite avec gestion des erreurs
+    // Création d'une nouvelle connexion SQLite avec l'objet PDO
     $pdo = new PDO("sqlite:$sqliteDbPath");
+    // Configuration des attributs PDO pour lancer des exceptions en cas d'erreur
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Création de la table 'prix' si elle n'existe pas déjà
     $sql = "CREATE TABLE IF NOT EXISTS prix (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         prix DECIMAL,
@@ -79,32 +51,43 @@ try {
     )";
     $pdo->exec($sql);
 
-    // Ouverture et traitement du fichier CSV
+    // Ouverture du fichier CSV en lecture
     if (($handle = fopen($csvFilePath, "r")) !== FALSE) {
-        // Ignorer l'en-tête du fichier CSV
+        // Lire l'en-tête du fichier CSV et l'ignorer si nécessaire
         fgetcsv($handle, 1000, ",");
 
-        // Préparation de la requête SQL pour insérer les données du CSV
+        // Préparation de la requête SQL pour insérer les données
         $stmt = $pdo->prepare("INSERT INTO prix (prix, date_prix, day_min, airbnb_id, date_releve) VALUES (?, ?, ?, ?, ?)");
 
-        // Lecture de chaque ligne du fichier CSV et insertion dans la base de données
+        // Lire chaque ligne du fichier CSV
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            // Exécution de la requête SQL avec les données du fichier CSV et les parties du nom de fichier
             $stmt->execute([$data[0], $data[1], $data[2], $part1, $part3]);
+        
         }
-        // Fermeture du fichier après traitement
+        // Fermeture du fichier CSV
         fclose($handle);
     }
 } catch (PDOException $e) {
-    // Gestion des erreurs de base de données
+    // Affichage de l'erreur en cas d'exception
     echo "Erreur : " . $e->getMessage();
 }
 
-// // Fonction pour extraire des parties spécifiques de l'URL
 function url_tokenizer() {
-    $current_url = $_SERVER['REQUEST_URI']; // Récupération de l'URL de la requête
-    $current_url = strtok($current_url, '?'); // Suppression des paramètres GET
-    $tokens = explode('/', $current_url); // Découpage de l'URL en segments
-    array_shift($tokens); // Suppression du segment vide dû au premier '/'
-    return $tokens[2]; // Retour du troisième segment de l'URL
+    // Récupérer l'URL actuelle
+    $current_url = $_SERVER['REQUEST_URI']; // Utilisez 'REQUEST_URI' pour obtenir l'URI de la requête
+
+    // Supprimer les éventuels paramètres GET de l'URL
+    $current_url = strtok($current_url, '?');
+
+    // Découper l'URL en tokens en utilisant le délimiteur "/"
+    $tokens = explode('/', $current_url);
+
+    // Supprimer le premier élément du tableau, car il sera vide en raison du slash initial dans l'URL
+    array_shift($tokens);
+
+    return $tokens[2];
 }
+
+
 ?>
