@@ -60,10 +60,25 @@
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="card p-5 my-4 w-100" style="max-width: 500px;">
             <h2 class="fw-bold mb-4 text-center">Create an Account</h2>
-            <form novalidate>
+            <form novalidate method="post" action="submit.php">
+                <!-- Name and Surname input on the same line -->
+                <div class="row g-2 mb-3">
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <input type="text" name="nom" class="form-control" id="nameInput" placeholder="Nom" required>
+                            <label for="nameInput">Nom</label>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <input type="text" name="prenom" class="form-control" id="surnameInput" placeholder="Prenom" required>
+                            <label for="surnameInput">Prenom</label>
+                        </div>
+                    </div>
+                </div>
                 <!-- Email input -->
                 <div class="form-floating mb-3">
-                    <input type="email" id="emailInput" class="form-control" placeholder="name@example.com" 
+                    <input type="email" name="mail" id="emailInput" class="form-control" placeholder="name@example.com" 
                            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required title="Please enter a valid email address. It should contain a '.' after '@' and end with a domain extension like '.com'">
                     <label for="emailInput">Email address</label>
                     <div class="invalid-feedback">Please provide a valid email address. It should contain a '.' after '@' and end with a domain extension like '.com'.</div>
@@ -71,7 +86,7 @@
                 </div>
                 <!-- Password input -->
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="newPassword" placeholder="Password" 
+                    <input type="password" name="password" class="form-control" id="newPassword" placeholder="Password" 
                         pattern="(?=.*\d)(?=.*[A-Z]).{7,}" required>
                     <label for="newPassword">Password</label>
                     <div class="invalid-feedback">
@@ -91,16 +106,17 @@
                     <span id="buttonText">Create Account</span>
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="loadingSpinner" style="display: none; margin-left: 8px;"></span>
                 </button>
-
-                
-
             </form>
             <div class="text-center mt-3">
                 <p>Already registered? <a href="./login.html" class="text-decoration-none">Log in</a></p>
             </div>
         </div>
     </div>
-
+    
+    
+    
+    
+    
 
 
     
